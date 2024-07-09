@@ -16,13 +16,20 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
-const pool = new pg.Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
+// const pool = new pg.Pool({
+//   connectionString: process.env.CONNECTION_STRING
+// });
+
+const client = new pg.Pool({
+  connectionString: process.env.CONNECTION_STRING
 });
+client.connect()
+  .then(() => {
+      console.log("Database is connected")
+  })
+  .catch((err) => {
+      console.log(err)
+  })
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -166,8 +173,8 @@ app.post("/api/auth/login", async (req, res) => {
 app.get("/api/users/:id", authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
-    const userId = req.params.id;
-    const loggedInUserId = req.user.userId;
+    const userId = req?.params?.id || null;
+    const loggedInUserId = req?.user?.userId || null;
 
     // Check if the logged-in user has access to the requested user record
     const userAccessResult = await client.query(
@@ -257,7 +264,7 @@ app.get("/api/organisations/:orgId", authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     const orgId = req.params.orgId;
-    const loggedInUserId = req.user.userId;
+    const loggedInUserId = req?.user?.userId || null;
 
     const orgAccessResult = await client.query(
       `SELECT o.*
@@ -297,7 +304,7 @@ app.post("/api/organisations", authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     const { name, description } = req.body;
-    const loggedInUserId = req.user.userId;
+    const loggedInUserId = req?.user?.userId || null;
 
     if (!name) {
       return res.status(400).json({
@@ -346,7 +353,7 @@ app.post("/api/organisations/:orgId/users", authenticateToken, async (req, res) 
   try {
     const { userId } = req.body;
     const orgId = req.params.orgId;
-    const loggedInUserId = req.user.userId; // Get logged-in user's ID from decoded token
+    const loggedInUserId = req?.user?.userId || null; // Get logged-in user's ID from decoded token
 
     // Check if required fields are present
     if (!userId) {
@@ -415,5 +422,5 @@ app.post("/api/organisations/:orgId/users", authenticateToken, async (req, res) 
 module.exports = app
 
 app.listen(port, () => {
-  console.log(`Postgresql database connected`);
+  console.log(`Server is live`);
 });
