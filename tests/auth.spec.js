@@ -26,7 +26,7 @@ describe('Token Generation', () => {
   });
 });
 
-describe('POST /auth/register', () => {
+describe('POST /api/auth/register', () => {
     beforeAll(async () => {
       const client = await pool.connect();
       await client.query('BEGIN');
@@ -43,7 +43,7 @@ describe('POST /auth/register', () => {
   
     it('should register user successfully with default organization', async () => {
       const res = await request(app)
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           firstName: 'John',
           lastName: 'Doe',
@@ -62,7 +62,7 @@ describe('POST /auth/register', () => {
   
     it('should log the user in successfully', async () => {
       const res = await request(app)
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           email: 'john.doe@example.com',
           password: 'password'
@@ -75,7 +75,7 @@ describe('POST /auth/register', () => {
 
     it('should fail to login with incorrect password', async () => {
       const res = await request(app)
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           email: 'john.doe@example.com',
           password: 'wrongpassword'
@@ -99,7 +99,7 @@ describe('POST /auth/register', () => {
         delete userData[field];
   
         const res = await request(app)
-          .post('/auth/register')
+          .post('/api/auth/register')
           .send(userData);
   
         expect(res.status).toBe(400);
@@ -109,7 +109,7 @@ describe('POST /auth/register', () => {
   
     it('should fail if there is a duplicate email', async () => {
       await request(app)
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           firstName: 'Jane',
           lastName: 'Doe',
@@ -119,7 +119,7 @@ describe('POST /auth/register', () => {
         });
   
       const res = await request(app)
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           firstName: 'Jane',
           lastName: 'Doe',
@@ -139,7 +139,7 @@ describe('GET /api/organisations', () => {
   beforeAll(async () => {
     // Register and log in User 1
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({
         firstName: 'Alice',
         lastName: 'Smith',
@@ -149,7 +149,7 @@ describe('GET /api/organisations', () => {
       });
       
     let res = await request(app)
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({
         email: 'alice.smith@example.com',
         password: 'password1'
@@ -158,7 +158,7 @@ describe('GET /api/organisations', () => {
 
     // Register and log in User 2
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({
         firstName: 'Bob',
         lastName: 'Brown',
@@ -168,7 +168,7 @@ describe('GET /api/organisations', () => {
       });
 
     res = await request(app)
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({
         email: 'bob.brown@example.com',
         password: 'password2'

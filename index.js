@@ -12,7 +12,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 app.use(express.json());
 
@@ -20,10 +20,10 @@ app.use(express.json());
 //   connectionString: process.env.CONNECTION_STRING
 // });
 
-const client = new pg.Pool({
+const pool = new pg.Pool({
   connectionString: process.env.CONNECTION_STRING
 });
-client.connect()
+pool.connect()
   .then(() => {
       console.log("Database is connected")
   })
