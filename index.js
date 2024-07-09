@@ -36,13 +36,13 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-app.post("/auth/register", async (req, res) => {
+app.post("/api/auth/register", async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
     const { firstName, lastName, email, password, phone } = req.body;
-    if (!firstName || !lastName || !email || !password || !phone) {
+    if (!firstName || !lastName || !email || !password ) {
       return res.status(400).json({
         status: "Bad request",
         message: "Registration unsuccessful",
@@ -103,7 +103,7 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-app.post("/auth/login", async (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   const client = await pool.connect();
   try {
     const { email, password } = req.body;
