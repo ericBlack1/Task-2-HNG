@@ -45,17 +45,21 @@ describe('POST /api/auth/register', () => {
       const res = await request(app)
         .post('/api/auth/register')
         .send({
-          firstName: 'John',
+          firstName: 'glen',
           lastName: 'Doe',
-          email: 'john.doe@example.com',
+          email: 'glen.doe@example.com',
           password: 'password',
           phone: '123456789'
         });
+
+        if (res.status !== 201) {
+          console.log(res.body);
+        }
   
       expect(res.status).toBe(201);
-      expect(res.body.data.user.firstName).toBe('John');
+      expect(res.body.data.user.firstName).toBe('glen');
       expect(res.body.data.user.lastName).toBe('Doe');
-      expect(res.body.data.user.email).toBe('john.doe@example.com');
+      expect(res.body.data.user.email).toBe('glen.doe@example.com');
       expect(res.body.data.user.phone).toBe('123456789');
       expect(res.body.data.accessToken).toBeTruthy();
     });
@@ -64,12 +68,12 @@ describe('POST /api/auth/register', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'john.doe@example.com',
+          email: 'glen.doe@example.com',
           password: 'password'
         });
   
       expect(res.status).toBe(200);
-      expect(res.body.data.user.email).toBe('john.doe@example.com');
+      expect(res.body.data.user.email).toBe('glen.doe@example.com');
       expect(res.body.data.accessToken).toBeTruthy();
     });
 
@@ -77,7 +81,7 @@ describe('POST /api/auth/register', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'john.doe@example.com',
+          email: 'glen.doe@example.com',
           password: 'wrongpassword'
         });
   
@@ -90,9 +94,9 @@ describe('POST /api/auth/register', () => {
   
       for (const field of fields) {
         const userData = {
-          firstName: 'John',
+          firstName: 'glen',
           lastName: 'Doe',
-          email: 'john.doe@example.com',
+          email: 'glen.doe@example.com',
           password: 'password',
           phone: '123456789'
         };
